@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Clock and Number Guessing Game</title>
+    <style>
+    
+      .centre {
+        /* border: 10px rgb(8, 8, 8) double; */
+        padding: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+      #banner {
+       /* border: 5px rgb(3, 1, 1) solid; */
+        color: rgb(235, 237, 237);
+        background-color: rgb(0, 0, 0);
+        padding: 10px;
+        font-size: larger;
+        font-family: "Times New Roman", Times, serif;
+         border-radius: 12px;
+         margin-right: 5px;
+      }
+      #time {
+        background-color: rgb(0, 0, 0);
+        /* border: 5px rgb(24, 21, 21) solid; */
+        width: 180px;
+        color: rgb(245, 249, 244);
+        font-size: xx-large;
+         border-radius: 11px;
+      }
+      #box {
+        margin-top: 20px;
+      }
+      .ull {
+        /* width: 100px; */
+        height: fit-content;
+        width: fit-content;
+        border: 4px red solid;
+        display: flex;
+        flex-direction: column;
+      }
+      img {
+        width: 100px;
+        height: 100px;
+      }
+      button{
+        background-color: rgb(24, 25, 24);
+        color: azure;
+        margin: 5px;
+        padding: 5px;
+        border-radius: 12px;
+      }
+      .stop:hover{
+        background-color: rgb(255, 0, 0);
+        cursor: pointer;
+      }
+       .start:hover{
+        background-color: rgb(0, 21, 255);
+        cursor: pointer;
+      }
+      #box{
+        text-align: center;
+       
+      }
+    </style>
+  </head>
+  <body>
+    <div class="centre">
+      <button class="start">start</button>
+      <div id="banner">Your time is here</div>
+      <div id="time"></div>
+      <button class="stop">stop</button>
+    </div>
+    <div id="box">
+      <h1>Number Guessing Game</h1>
+      <p>Try guessing a number between 1 and 100.</p>
+      <p>You have 10 attempts to guess the right answer.</p>
+      <br />
+      <form class="form">
+        <label for="guessField" id="guess">Guess a number</label>
+        <input type="text" id="guessfield" class="guessfield" />
+        <input
+          type="submit"
+          id="subt"
+          value="Submit Guess"
+          class="guessSubmit"
+        />
+      </form>
+      <div class="resultparas">
+        <p>Previous guesses: <span class="guesses"></span></p>
+        <p>Guesses remaining: <span class="lastresult">10</span></p>
+        <p class="lowOrHi"></p>
+      </div>
+    </div>
+    <!-- <div class="catlog">
+      <ul class="ull">
+        <div class="aa" id="n1">
+          <li class="li"><img src="./i1.jpg" /></li>
+        </div>
+        <div class="aa" id="n2">
+          <li class="li"><img src="./i2.jpg" /></li>
+        </div>
+        <div class="aa" id="n3">
+          <li class="li"><img src="./i3.jpg" /></li>
+        </div>
+        <div class="aa" id="n4">
+          <li class="li"><img src="./i4.jpg" /></li>
+        </div>
+      </ul>
+    </div> -->
+    <script>
+      const a = document.querySelector("#time");
+      const b = document.getElementById("banner");
+      setInterval(function () {
+        let date = new Date();
+        a.innerHTML = date.toLocaleTimeString();
+        b.innerHTML = date.toLocaleDateString();
+      }, 1000);
+      const randomColor=function(){
+        const hex='0123457869ABCDEF';
+        color='';
+        for(let i=0;i<6;i++){
+          color+=hex[Math.floor(Math.random()*16)];
+        }
+        return color;
+      }
+      let c=0;
+const ap=document.querySelector('body');
+ let changeme;
+ 
+ const body=document.querySelector('body');
+ const changecolor=function(){
+  body.bgColor=randomColor();
+  
+}
+
+ document.querySelector('.start').addEventListener('click',function(e){
+  c++;
+  if(c<=1){
+    changeme=setInterval(changecolor,1500)
+  }
+ })
+ const stopchange=function(){
+  clearInterval(changeme);
+  c=0;
+ }
+ document.querySelector('.stop').addEventListener('click',stopchange)
+      const prev = document.querySelector(".guesses");
+      const rem = document.querySelector(".lastresult");
+      const user = document.querySelector(".guessfield");
+      const submit = document.querySelector("#subt");
+      const lh = document.querySelector(".lowOrHi");
+      const re = document.querySelector(".resultparas");
+
+      let prevguess = [];
+      let numguess = 1;
+      let play = true;
+      let ran = generateRandomNumber();
+      function generateRandomNumber() {
+        return parseInt(Math.random() * 100 + 1);
+      }
+      if (play) {
+        submit.addEventListener("click", function (e) {
+          e.preventDefault();
+          const n = parseInt(user.value);
+          checkguess(n);
+        });
+      }
+      function checkguess(n) {
+        console.log(isNaN(n));
+          console.log(n);
+        if (1 <= n && n <= 100 && !isNaN(n)) {
+          if (numguess <= 10) {
+            prevguess.push(n);
+            validguess(n);
+          } else {
+            display("You have passed the guess limit.");
+            end();
+          }
+        } else {
+          alert("Please enter a valid number.");
+        }
+      }
+      function validguess(n) {
+        if (n === ran) {
+          display("Bravo! Right guess.");
+          displayGUESS(n);
+          end();
+        } else if (n > ran) {
+          display("Your guess is high.");
+          displayGUESS(n);
+        } else {
+          display("Your guess is low.");
+          displayGUESS(n);
+        }
+      }
+      function displayGUESS(n) {
+        user.value = "";
+        numguess++;
+        prev.innerHTML += `${n} `;
+        rem.innerHTML = `${11 - numguess}`;
+      }
+      function display(message) {
+        lh.innerHTML = `<h2>${message}</h2>`;
+      }
+      function end() {
+        play = false;
+        user.disabled = true;
+        submit.disabled = true;
+
+        const button = document.createElement("button");
+        re.appendChild(button);
+        button.innerHTML = `Restart`;
+
+        button.addEventListener("click", function () {
+          resetGame();
+          re.removeChild(button);
+        });
+      }
+      function resetGame() {
+        play = true;
+        numguess = 1;
+        prevguess = [];
+        ran = generateRandomNumber();
+
+        prev.innerHTML = "";
+        rem.innerHTML = "10";
+        lh.innerHTML = "";
+
+        user.disabled = false;
+        submit.disabled = false;
+        user.value = "";
+      }
+      // const ul = document.getElementsByClassName("aa");
+      // const arr = Array.from(ul);
+      // arr.forEach((element) => {
+      //   element.addEventListener("click", function (e) {
+      //     const tobedelete = e.target.parentNode;
+      //     tobedelete.parentNode.removeChild(tobedelete); //e.target.parentNode.remove()
+      //   });
+      // });
+      // console.log(ul);
+    </script>
+  </body>
+</html>
